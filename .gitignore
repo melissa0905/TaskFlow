@@ -1,0 +1,34 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.user
+*.suo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.*
+
+# .NET
+**/bin/
+**/obj/
+*.rsuser
+
+# User secrets / local config
+secrets.json
+*.Development.local.json
+
+# Docker / local data
+*.db
+*.sqlite
+*.sqlite3
