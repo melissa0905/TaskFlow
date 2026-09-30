@@ -1,6 +1,11 @@
 import { useEffect, useState, type SubmitEvent } from 'react'
 import { createTeamMember, getTeamMembers } from '../api/teamMembers'
 import type { TeamMember } from '../types/teamMember'
+import { PageHeader } from './PageHeader'
+
+function isAbortError(error: unknown) {
+    return error instanceof DOMException && error.name === 'AbortError'
+}
 
 export function TeamMembersSection() {
     const [members, setTeamMembers] = useState<TeamMember[]>([])
@@ -11,12 +16,23 @@ export function TeamMembersSection() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        getTeamMembers()
+        const controller = new AbortController()
+
+        getTeamMembers(controller.signal)
             .then(setTeamMembers)
             .catch((err: unknown) => {
+                if (isAbortError(err)) {
+                    return
+                }
                 setError(err instanceof Error ? err.message : 'Bir hata oluştu.')
             })
-            .finally(() => setLoading(false))
+            .finally(() => {
+                if (!controller.signal.aborted) {
+                    setLoading(false)
+                }
+            })
+
+        return () => controller.abort()
     }, [])
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -38,7 +54,10 @@ export function TeamMembersSection() {
     }
     return (
         <section>
-            <h3>Ekip Üyeleri</h3>
+            <PageHeader
+                title="Ekip Üyeleri"
+                description="Ekip üyelerini oluştur ve yönet."
+            />
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="member-name">Ad Soyad:</label>

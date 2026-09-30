@@ -30,6 +30,21 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
+    {
+        if (!context.Response.HasStarted)
+        {
+            context.Response.StatusCode = 499;
+        }
+    }
+});
+
 app.UseAuthorization();
 
 app.MapControllers();

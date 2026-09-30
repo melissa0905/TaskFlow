@@ -166,3 +166,34 @@ li p {
     width: 100%;
   }
 }
+
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e9e7f1;
+}
+
+.app-brand {
+  margin-right: auto;
+  color: #6d28d9;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.app-nav a {
+  padding: 10px 16px;
+  color: #737087;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.app-nav a:hover,
+.app-nav a.active {
+  color: #6d28d9;
+  background: #f0eaff;
+}

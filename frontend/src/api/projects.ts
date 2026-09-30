@@ -1,7 +1,7 @@
 import type { CreateProjectInput, Project } from '../types/project';
 
-export async function getProjects(): Promise<Project[]> {
-    const response = await fetch('/api/projects');
+export async function getProjects(signal?: AbortSignal): Promise<Project[]> {
+    const response = await fetch('/api/projects', { signal });
     if (!response.ok) {
         throw new Error('Projeler yüklenemedi.')
     }

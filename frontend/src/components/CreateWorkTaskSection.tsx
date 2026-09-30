@@ -1,10 +1,15 @@
 import { useEffect, useState, type SubmitEvent } from 'react'
 import { getProjects } from '../api/projects'
-import { createTeamMember, getTeamMembers } from '../api/teamMembers'
+import { getTeamMembers } from '../api/teamMembers'
 import type { TeamMember } from '../types/teamMember'
 import { createWorkTask, getWorkTasks } from '../api/workTasks'
 import type { Project } from '../types/project'
 import type { WorkTask } from '../types/workTask'
+import { PageHeader } from './PageHeader'
+
+function isAbortError(error: unknown) {
+    return error instanceof DOMException && error.name === 'AbortError'
+}
 
 export function CreateWorkTaskSection() {
     const [projects, setProjects] = useState<Project[]>([])
@@ -23,17 +28,31 @@ export function CreateWorkTaskSection() {
     const [success, setSuccess] = useState(false)
 
     useEffect(() => {
-        Promise.all([getProjects(), getTeamMembers(), getWorkTasks()])
+        const controller = new AbortController()
+
+        Promise.all([
+            getProjects(controller.signal),
+            getTeamMembers(controller.signal),
+            getWorkTasks(controller.signal),
+        ])
             .then(([projectData, memberData, taskData]) => {
                 setProjects(projectData)
                 setTeamMembers(memberData)
                 setTasks(taskData)
             })
-            .catch((err) => {
+            .catch((err: unknown) => {
+                if (isAbortError(err)) {
+                    return
+                }
                 setError('Failed to fetch data')
             })
-            .finally(() => setLoading(false))
+            .finally(() => {
+                if (!controller.signal.aborted) {
+                    setLoading(false)
+                }
+            })
 
+        return () => controller.abort()
     }, [])
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -143,7 +162,12 @@ export function CreateWorkTaskSection() {
                     </button>
                 </form>
             )}
-            <h2>Görevler</h2>
+            <PageHeader
+                title="Görevler"
+                description="Oluşturduğunuz görevleri görüntüleyin."
+            />
+            {loading && <p>Görevler yükleniyor...</p>}
+            {error && <p role="alert">{error}</p>}
 
             {!loading && tasks.length === 0 && <p>Henüz görev yok.</p>}
 

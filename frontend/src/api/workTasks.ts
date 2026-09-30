@@ -13,8 +13,8 @@ export async function createWorkTask(input: CreateWorkTaskInput): Promise<void> 
     }   
 }
 
-export async function getWorkTasks(): Promise<WorkTask[]> {
-  const response = await fetch('/api/work-tasks')
+export async function getWorkTasks(signal?: AbortSignal): Promise<WorkTask[]> {
+  const response = await fetch('/api/work-tasks', { signal })
 
   if (!response.ok) {
     throw new Error('Görevler yüklenemedi.')

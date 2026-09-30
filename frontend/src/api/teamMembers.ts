@@ -1,7 +1,7 @@
 import type { TeamMember } from '../types/teamMember';
 
-export async function getTeamMembers(): Promise<TeamMember[]> {
-    const response = await fetch('/api/team-members');
+export async function getTeamMembers(signal?: AbortSignal): Promise<TeamMember[]> {
+    const response = await fetch('/api/team-members', { signal });
     if (!response.ok) {
         throw new Error('Takım üyeleri yüklenemedi.')
     }
