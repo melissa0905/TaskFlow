@@ -73,13 +73,13 @@ export function CreateWorkTaskSection() {
             {!loading && (
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="task-project">Project</label>
+                        <label htmlFor="task-project">Proje</label>
                         <select
                             id="task-project"
                             value={projectId}
                             onChange={(e) => setProjectId(e.target.value)}
                         >
-                            <option value="">Select a project</option>
+                            <option value="">Bir proje seçin</option>
                             {projects.map((project) => (
                                 <option key={project.id} value={project.id}>
                                     {project.name}
@@ -89,7 +89,7 @@ export function CreateWorkTaskSection() {
                     </div>
 
                     <div>
-                        <label htmlFor="task-title">Title</label>
+                        <label htmlFor="task-title">Başlık</label>
                         <input
                             type="text"
                             id="task-title"
@@ -101,7 +101,7 @@ export function CreateWorkTaskSection() {
                     </div>
 
                     <div>
-                        <label htmlFor="task-description">Description</label>
+                        <label htmlFor="task-description">Açıklama</label>
                         <textarea
                             id="task-description"
                             value={description}
@@ -112,7 +112,7 @@ export function CreateWorkTaskSection() {
                     </div>
 
                     <div>
-                        <label htmlFor="task-due-date">Due Date</label>
+                        <label htmlFor="task-due-date">Son Tarih</label>
                         <input
                             type="date"
                             id="task-due-date"
@@ -123,13 +123,13 @@ export function CreateWorkTaskSection() {
                     </div>
 
                     <div>
-                        <label htmlFor="task-assignee">Assigned To</label>
+                        <label htmlFor="task-assignee">Atanan</label>
                         <select
                             id="task-assignee"
                             value={assignedToId || ''}
                             onChange={(e) => setAssignedToId(e.target.value || null)}
                         >
-                            <option value="">Select a team member</option>
+                            <option value="">Bir ekip üyesi seçin</option>
                             {members.map((member) => (
                                 <option key={member.id} value={member.id}>
                                     {member.fullName} ({member.email})
@@ -139,7 +139,7 @@ export function CreateWorkTaskSection() {
                     </div>
 
                     <button type="submit" disabled={saving}>
-                        {saving ? 'Creating...' : 'Create Work Task'}
+                        {saving ? 'Creating...' : 'Görev Oluştur'}
                     </button>
                 </form>
             )}

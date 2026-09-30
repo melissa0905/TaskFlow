@@ -26,7 +26,7 @@ function App() {
       })
       .finally(() => setLoading(false))
   }, [])
- 
+
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!name.trim()) {
@@ -50,7 +50,10 @@ function App() {
 
   return (
     <main>
-      <h1>TaskFlow</h1>
+      <header className="page-header">
+        <h1>TaskFlow</h1>
+        <p>Projelerini, ekibini ve görevlerini tek yerden yönet.</p>
+      </header>
       <section>
         <h2>Yeni Proje</h2>
         <form onSubmit={handleSubmit}>
@@ -63,7 +66,7 @@ function App() {
               onChange={(e) => setName(e.target.value)}
               maxLength={150}
               required
-          />
+            />
           </div>
           <div>
             <label htmlFor="description">Açıklama</label>
@@ -85,7 +88,7 @@ function App() {
         <h2>Projeler</h2>
         {error && <p role="alert" style={{ color: 'red' }}>{error}</p>}
         {loading && <p>Projeler Yükleniyor...</p>}
-         {!loading && projects.length === 0 && (
+        {!loading && projects.length === 0 && (
           <p>Henüz proje eklenmedi.</p>
         )}
         <ul>
