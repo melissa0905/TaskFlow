@@ -1,0 +1,15 @@
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\bin\Debug\net10.0\TaskFlow.Application.deps.json
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\bin\Debug\net10.0\TaskFlow.Application.dll
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\bin\Debug\net10.0\TaskFlow.Application.pdb
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\bin\Debug\net10.0\TaskFlow.Domain.dll
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\bin\Debug\net10.0\TaskFlow.Domain.pdb
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.Application.csproj.AssemblyReference.cache
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.Application.AssemblyInfoInputs.cache
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.Application.AssemblyInfo.cs
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.Application.csproj.CoreCompileInputs.cache
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.7EAD9043.Up2Date
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.Application.dll
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\refint\TaskFlow.Application.dll
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\TaskFlow.Application.pdb
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Application\obj\Debug\net10.0\ref\TaskFlow.Application.dll

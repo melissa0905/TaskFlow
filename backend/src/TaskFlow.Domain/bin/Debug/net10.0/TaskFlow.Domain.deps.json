@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "TaskFlow.Domain/1.0.0": {
+        "runtime": {
+          "TaskFlow.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "TaskFlow.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,11 @@
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\bin\Debug\net10.0\TaskFlow.Domain.deps.json
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\bin\Debug\net10.0\TaskFlow.Domain.dll
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\bin\Debug\net10.0\TaskFlow.Domain.pdb
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\TaskFlow.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\TaskFlow.Domain.AssemblyInfoInputs.cache
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\TaskFlow.Domain.AssemblyInfo.cs
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\TaskFlow.Domain.csproj.CoreCompileInputs.cache
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\TaskFlow.Domain.dll
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\refint\TaskFlow.Domain.dll
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\TaskFlow.Domain.pdb
+C:\Users\melis\projects\TaskFlow\backend\src\TaskFlow.Domain\obj\Debug\net10.0\ref\TaskFlow.Domain.dll

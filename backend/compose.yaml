@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: taskflow-postgres
+    environment:
+      POSTGRES_DB: taskflow_db
+      POSTGRES_USER: taskflow_user
+      POSTGRES_PASSWORD: taskflow_dev_password
+    ports:
+      - "127.0.0.1:55473:5432"
+    volumes:
+      - taskflow_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow_user -d taskflow_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  taskflow_postgres_data:
