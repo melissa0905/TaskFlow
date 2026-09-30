@@ -38,7 +38,7 @@ export function TeamMembersSection() {
     }
     return (
         <section>
-            <h2>Ekip Üyeleri</h2>
+            <h3>Ekip Üyeleri</h3>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="member-name">Ad Soyad:</label>
