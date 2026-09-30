@@ -13,5 +13,12 @@ namespace TaskFlow.Application.Abstractions
         Task AddAsync(WorkTask workTask, CancellationToken cancellationToken);
         Task<IReadOnlyList<WorkTask>> GetAllAsync(
     CancellationToken cancellationToken);
+
+        Task<WorkTask?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
+
+        Task SaveChangesAsync(
+            CancellationToken cancellationToken);
     }
 }

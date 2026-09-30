@@ -45,5 +45,16 @@ namespace TaskFlow.Infrastructure.Repositories
                 .OrderBy(x => x.DueDate)
                 .ToListAsync(cancellationToken);
         }
+
+        public Task<WorkTask?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return dbContext.WorkTasks
+                .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

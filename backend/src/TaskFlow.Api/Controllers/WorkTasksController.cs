@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Api.Contracts.WorkTasks;
@@ -41,6 +37,23 @@ namespace TaskFlow.Api.Controllers
                 cancellationToken);
 
             return Ok(tasks);
+        }
+        [HttpPatch("{id:guid}/status")]
+        public async Task<IActionResult> ChangeStatus(
+         Guid id,
+        [FromBody] ChangeWorkTaskStatusRequest request,
+        CancellationToken cancellationToken)
+        {
+            var updated = await sender.Send(
+                new ChangeWorkTaskStatusCommand(
+                    id,
+                    request.Status!.Value),
+                cancellationToken);
+
+            if (!updated)
+                return NotFound();
+
+            return NoContent();
         }
     }
 

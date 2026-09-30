@@ -2,19 +2,22 @@ import { useEffect, useState, type SubmitEvent } from 'react'
 import { getProjects } from '../api/projects'
 import { getTeamMembers } from '../api/teamMembers'
 import type { TeamMember } from '../types/teamMember'
-import { createWorkTask, getWorkTasks } from '../api/workTasks'
+import { createWorkTask } from '../api/workTasks'
 import type { Project } from '../types/project'
-import type { WorkTask } from '../types/workTask'
-import { PageHeader } from './PageHeader'
 
+
+type CreateWorkTaskSectionProps = {
+    onCreated: () => Promise<void>
+}
 function isAbortError(error: unknown) {
     return error instanceof DOMException && error.name === 'AbortError'
 }
 
-export function CreateWorkTaskSection() {
+export function CreateWorkTaskSection({
+    onCreated,
+}: CreateWorkTaskSectionProps) {
     const [projects, setProjects] = useState<Project[]>([])
     const [members, setTeamMembers] = useState<TeamMember[]>([])
-    const [tasks, setTasks] = useState<WorkTask[]>([])
 
     const [projectId, setProjectId] = useState('')
     const [title, setTitle] = useState('')
@@ -33,12 +36,10 @@ export function CreateWorkTaskSection() {
         Promise.all([
             getProjects(controller.signal),
             getTeamMembers(controller.signal),
-            getWorkTasks(controller.signal),
         ])
-            .then(([projectData, memberData, taskData]) => {
+            .then(([projectData, memberData]) => {
                 setProjects(projectData)
                 setTeamMembers(memberData)
-                setTasks(taskData)
             })
             .catch((err: unknown) => {
                 if (isAbortError(err)) {
@@ -69,12 +70,12 @@ export function CreateWorkTaskSection() {
                 dueDate: `${dueDate}T00:00:00.000Z`,
                 assignedToId: assignedToId || null,
             })
-            setTasks(await getWorkTasks())
             setTitle('')
             setDescription('')
             setDueDate('')
             setAssignedToId('')
             setSuccess(true)
+            await onCreated()
 
         } catch (err) {
             setError('Failed to create work task')
@@ -162,27 +163,7 @@ export function CreateWorkTaskSection() {
                     </button>
                 </form>
             )}
-            <PageHeader
-                title="Görevler"
-                description="Oluşturduğunuz görevleri görüntüleyin."
-            />
-            {loading && <p>Görevler yükleniyor...</p>}
-            {error && <p role="alert">{error}</p>}
-
-            {!loading && tasks.length === 0 && <p>Henüz görev yok.</p>}
-
-            <ul>
-                {tasks.map((task) => (
-                    <li key={task.id}>
-                        <strong>{task.title}</strong>
-                        <p>{task.description}</p>
-                        <p>Proje: {task.projectName}</p>
-                        <p>Atanan: {task.assigneeName ?? 'Henüz atanmadı'}</p>
-                        <p>Son tarih: {task.dueDate.slice(0, 10)}</p>
-                        <p>Durum: {task.status === 1 ? 'Yapılacak' : task.status === 2 ? 'Devam ediyor' : 'Tamamlandı'}</p>
-                    </li>
-                ))}
-            </ul>
+          
         </section>
     )
 }

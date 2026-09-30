@@ -22,3 +22,17 @@ export async function getWorkTasks(signal?: AbortSignal): Promise<WorkTask[]> {
 
   return response.json() as Promise<WorkTask[]>
 }
+export async function changeWorkTaskStatus(
+  id: string,
+  status: number,
+): Promise<void> {
+  const response = await fetch(`/api/work-tasks/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Görev durumu güncellenemedi.')
+  }
+}
