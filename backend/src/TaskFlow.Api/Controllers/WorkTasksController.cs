@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Api.Contracts.WorkTasks;
 using TaskFlow.Application.WorkTasks.Commands.CreateWorkTask;
+using TaskFlow.Application.WorkTasks.Queries.GetWorkTaskById;
 using TaskFlow.Application.WorkTasks.Queries.GetWorkTasks;
 
 namespace TaskFlow.Api.Controllers
@@ -55,7 +56,20 @@ namespace TaskFlow.Api.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{id:guid}")]
+        public async Task<ActionResult<WorkTaskDetail>> GetById(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            var task = await sender.Send(
+                new GetWorkTaskByIdQuery(id),
+                cancellationToken);
+
+            if (task is null)
+                return NotFound();
+
+            return Ok(task);
+        }
     }
-
-
 }

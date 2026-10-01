@@ -267,3 +267,19 @@ li p {
 .task-status-control small {
   color: #737087;
 }
+.task-detail-link {
+  display: inline-block;
+  margin-left: 16px;
+  color: #6d28d9;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.task-detail-link:hover {
+  text-decoration: underline;
+}
+
+.task-detail-section {
+  margin-top: 24px;
+}

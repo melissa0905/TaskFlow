@@ -17,3 +17,13 @@ export type WorkTask = {
   assignedToId: string | null
   assigneeName: string | null
 }
+
+export type WorkTaskDetail = {
+  id:string
+  title: string
+  description: string 
+  status: number
+  dueDate: string
+  projectId: string
+  assignedToId: string | null
+}

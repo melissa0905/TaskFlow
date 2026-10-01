@@ -2,9 +2,6 @@ import { useEffect, useState, type SubmitEvent } from 'react'
 import { createProject, getProjects } from '../api/projects'
 import type { Project } from '../types/project'
 import { PageHeader } from '../components/PageHeader'
-import { TeamMembersSection } from '../components/TeamMembersSection'
-import { CreateWorkTaskSection } from '../components/CreateWorkTaskSection'
-
 function isAbortError(error: unknown) {
     return error instanceof DOMException && error.name === 'AbortError'
 }

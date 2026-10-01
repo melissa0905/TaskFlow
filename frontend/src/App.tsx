@@ -3,6 +3,7 @@ import TeamMembersPage from './pages/TeamMembersPage'
 import ProjectsPage from './pages/ProjectsPage'
 import TasksPage from './pages/TasksPage'
 import './App.css'
+import TaskDetailPage from './pages/TaskDetailPage'
 function App() {
   return (
     <>
@@ -19,7 +20,7 @@ function App() {
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/team" element={<TeamMembersPage />} />
         <Route path="/tasks" element={<TasksPage />} />
-
+        <Route path="/tasks/:id" element={<TaskDetailPage />} />
         <Route
           path="*"
           element={

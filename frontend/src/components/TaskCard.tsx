@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import type { TaskCardProps } from '../types/taskCard'
+import { Link } from 'react-router'
 
 const statusLabels: Record<number, string> = {
     1: 'Yapılacak',
@@ -66,6 +67,9 @@ export const TaskCard = memo(function TaskCard({
             >
                 {selected ? 'Seçildi' : 'Seç'}
             </button>
+            <Link className="task-detail-link" to={`/tasks/${task.id}`}>
+                Detayı aç →
+            </Link>
         </li>
     )
 })
