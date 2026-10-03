@@ -56,5 +56,9 @@ namespace TaskFlow.Infrastructure.Repositories
         {
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+        public void Remove(WorkTask task, CancellationToken cancellationToken)
+        {
+            dbContext.WorkTasks.Remove(task);
+        }
     }
 }

@@ -20,5 +20,6 @@ namespace TaskFlow.Application.Abstractions
 
         Task SaveChangesAsync(
             CancellationToken cancellationToken);
+        void Remove(WorkTask task, CancellationToken cancellationToken);
     }
 }

@@ -2,6 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Api.Contracts.WorkTasks;
 using TaskFlow.Application.WorkTasks.Commands.CreateWorkTask;
+using TaskFlow.Application.WorkTasks.Commands.DeleteWorkTask;
+using TaskFlow.Application.WorkTasks.Commands.UpdateWorkTask;
 using TaskFlow.Application.WorkTasks.Queries.GetWorkTaskById;
 using TaskFlow.Application.WorkTasks.Queries.GetWorkTasks;
 
@@ -70,6 +72,60 @@ namespace TaskFlow.Api.Controllers
                 return NotFound();
 
             return Ok(task);
+        }
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> Update(
+        Guid id,
+        [FromBody] UpdateWorkTaskRequest request,
+        CancellationToken cancellationToken)
+        {
+            if (request.DueDate!.Value.Kind != DateTimeKind.Utc)
+            {
+                ModelState.AddModelError(
+                    nameof(request.DueDate),
+                    "Son tarih UTC olarak gönderilmelidir.");
+
+                return ValidationProblem(ModelState);
+            }
+
+            var result = await sender.Send(
+                new UpdateWorkTaskCommand(
+                    id,
+                    request.Title,
+                    request.Description,
+                    request.DueDate.Value,
+                    request.AssignedToId),
+                cancellationToken);
+
+            if (result == UpdateWorkTaskResult.NotFound)
+                return NotFound();
+
+            if (result == UpdateWorkTaskResult.InvalidAssignee)
+            {
+                ModelState.AddModelError(
+                    nameof(request.AssignedToId),
+                    "Seçilen ekip üyesi bulunamadı.");
+
+                return ValidationProblem(ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(
+        Guid id,
+        CancellationToken cancellationToken)
+        {
+            var deleted = await sender.Send(
+                new DeleteWorkTaskCommand(id),
+                cancellationToken);
+
+            if (!deleted)
+                return NotFound();
+
+            return NoContent();
+
         }
     }
 }

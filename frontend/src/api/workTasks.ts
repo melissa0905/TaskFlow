@@ -50,3 +50,25 @@ export async function getWorkTaskById(id: string, signal?: AbortSignal): Promise
 
     return response.json() as Promise<WorkTaskDetail>
 }
+
+export async function updateWorkTask(id: string, input: Partial<CreateWorkTaskInput>): Promise<void> {
+    const response = await fetch(`/api/work-tasks/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+    })
+
+    if (!response.ok) {
+        throw new Error('Görev bilgileri güncellenemedi.')
+    }
+}
+
+export async function deleteWorkTask(id: string): Promise<void> {
+    const response = await fetch(`/api/work-tasks/${id}`, {
+        method: 'DELETE',
+    })
+
+    if (!response.ok) {
+        throw new Error('Görev silinemedi.')
+    }
+}
