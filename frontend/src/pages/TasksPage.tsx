@@ -5,9 +5,12 @@ import { useTasks } from '../hooks/useTasks';
 import { PageHeader } from '../components/PageHeader';
 import { CreateWorkTaskSection } from '../components/CreateWorkTaskSection';
 import { TaskCard } from '../components/TaskCard';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
 
 export default function TasksPage() {
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search, 400);
+  const isSearching = search !== debouncedSearch;
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
 
@@ -31,7 +34,7 @@ export default function TasksPage() {
         ? undefined
         : Number(statusFilter),
     page,
-    pageSize,
+    pageSize, enabled: !isSearching,
   });
 
   const handleSelect = useCallback((id: string) => {
@@ -68,7 +71,7 @@ export default function TasksPage() {
     await reload();
   }
 
-  const busy = loading || updatingId !== null;
+  const busy = loading || isSearching || updatingId !== null;
 
   return (
     <main>
@@ -113,13 +116,19 @@ export default function TasksPage() {
           </label>
         </div>
 
-        {loading && <p role="status">Görevler yükleniyor...</p>}
+        {(loading || isSearching) && (
+          <p role="status">
+            {isSearching
+              ? 'Arama hazırlanıyor...'
+              : 'Görevler yükleniyor...'}
+          </p>
+        )}
 
         {error && <p role="alert">{error}</p>}
 
         {updateError && <p role="alert">{updateError}</p>}
 
-        {!loading && !error && (
+        {!loading && !isSearching && !error && (
           <>
             <p className="task-result-count">
               Filtreye uygun toplam {totalCount} görev

@@ -8,13 +8,14 @@ type UseTasksParams = {
     status: number | undefined;
     page: number;
     pageSize: number;
+    enabled?: boolean;
 };
 
 export function useTasks({
     search,
     status,
     page,
-    pageSize,
+    pageSize, enabled = true
 }: UseTasksParams) {
     const [tasks, setTasks] = useState<WorkTask[]>([])
     const [totalCount, setTotalCount] = useState(0);
@@ -52,6 +53,9 @@ export function useTasks({
     }, [search, status, page, pageSize],)
 
     useEffect(() => {
+        if (!enabled) {
+            return;
+        }
         const controller = new AbortController();
         void reload(controller.signal);
         return () => controller.abort();
