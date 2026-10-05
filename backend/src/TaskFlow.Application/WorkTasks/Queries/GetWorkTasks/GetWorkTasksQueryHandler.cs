@@ -4,20 +4,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using TaskFlow.Application.Abstractions;
+using TaskFlow.Application.Common.Models;
 
 namespace TaskFlow.Application.WorkTasks.Queries.GetWorkTasks
 {
     public sealed class GetWorkTasksQueryHandler(
-     IWorkTaskRepository repository
- ) : IRequestHandler<GetWorkTasksQuery, IReadOnlyList<WorkTaskListItem>>
+    IWorkTaskRepository repository)
+    : IRequestHandler<
+        GetWorkTasksQuery,
+        PagedResult<WorkTaskListItem>>
     {
-        public async Task<IReadOnlyList<WorkTaskListItem>> Handle(
+        public async Task<PagedResult<WorkTaskListItem>> Handle(
             GetWorkTasksQuery request,
             CancellationToken cancellationToken)
         {
-            var tasks = await repository.GetAllAsync(cancellationToken);
+            var result = await repository.GetPagedAsync(
+                request.Search,
+                request.Status,
+                request.Page,
+                request.PageSize,
+                cancellationToken);
 
-            return tasks
+            var items = result.Items
                 .Select(task => new WorkTaskListItem(
                     task.Id,
                     task.Title,
@@ -29,6 +37,12 @@ namespace TaskFlow.Application.WorkTasks.Queries.GetWorkTasks
                     task.AssignedToId,
                     task.AssignedTo?.FullName))
                 .ToList();
+
+            return new PagedResult<WorkTaskListItem>(
+                items,
+                result.TotalCount,
+                result.Page,
+                result.PageSize);
         }
     }
 }

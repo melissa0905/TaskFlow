@@ -35,3 +35,10 @@ export type UpdateWorkTaskInput = {
   dueDate?: string
   assignedToId?: string | null
 }
+
+export type GetWorkTasksParams = {
+  search?: string;
+  status?: number;
+  page?: number;
+  pageSize?: number;
+};

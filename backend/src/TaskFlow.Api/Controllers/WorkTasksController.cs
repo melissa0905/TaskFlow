@@ -6,6 +6,7 @@ using TaskFlow.Application.WorkTasks.Commands.DeleteWorkTask;
 using TaskFlow.Application.WorkTasks.Commands.UpdateWorkTask;
 using TaskFlow.Application.WorkTasks.Queries.GetWorkTaskById;
 using TaskFlow.Application.WorkTasks.Queries.GetWorkTasks;
+using TaskFlow.Domain.Enums;
 
 namespace TaskFlow.Api.Controllers
 {
@@ -32,14 +33,45 @@ namespace TaskFlow.Api.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<WorkTaskListItem>>> GetAll(
-    CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(
+    [FromQuery] string? search = null,
+    [FromQuery] int? status = null,
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 10,
+    CancellationToken cancellationToken = default)
         {
-            var tasks = await sender.Send(
-                new GetWorkTasksQuery(),
+            if (page < 1)
+            {
+                ModelState.AddModelError(
+                    nameof(page),
+                    "Sayfa numarası en az 1 olmalıdır.");
+            }
+
+            if (pageSize < 1 || pageSize > 100)
+            {
+                ModelState.AddModelError(
+                    nameof(pageSize),
+                    "Sayfa boyutu 1 ile 100 arasında olmalıdır.");
+            }
+
+            if (status.HasValue &&
+                !Enum.IsDefined(typeof(WorkTaskStatus), status.Value))
+            {
+                ModelState.AddModelError(
+                    nameof(status),
+                    "Geçersiz görev durumu.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var result = await sender.Send(
+                new GetWorkTasksQuery(search, status, page, pageSize),
                 cancellationToken);
 
-            return Ok(tasks);
+            return Ok(result);
         }
         [HttpPatch("{id:guid}/status")]
         public async Task<IActionResult> ChangeStatus(

@@ -1,4 +1,5 @@
-import type { CreateWorkTaskInput, WorkTask, WorkTaskDetail } from "../types/workTask";
+import type { PagedResult } from "../types/pagedResult";
+import type { CreateWorkTaskInput, GetWorkTasksParams, WorkTask, WorkTaskDetail } from "../types/workTask";
 
 export async function createWorkTask(input: CreateWorkTaskInput): Promise<void> {
     const response = await fetch('/api/work-tasks', {
@@ -11,16 +12,6 @@ export async function createWorkTask(input: CreateWorkTaskInput): Promise<void> 
     if (!response.ok) {
         throw new Error('İş görevi oluşturulamadı.')
     }
-}
-
-export async function getWorkTasks(signal?: AbortSignal): Promise<WorkTask[]> {
-    const response = await fetch('/api/work-tasks', { signal })
-
-    if (!response.ok) {
-        throw new Error('Görevler yüklenemedi.')
-    }
-
-    return response.json() as Promise<WorkTask[]>
 }
 export async function changeWorkTaskStatus(
     id: string,
@@ -71,4 +62,37 @@ export async function deleteWorkTask(id: string): Promise<void> {
     if (!response.ok) {
         throw new Error('Görev silinemedi.')
     }
+}
+export async function getWorkTasks(
+    {
+        search,
+        status,
+        page = 1,
+        pageSize = 10,
+    }: GetWorkTasksParams = {},
+    signal?: AbortSignal,
+): Promise<PagedResult<WorkTask>> {
+    const params = new URLSearchParams({
+        page: String(page),
+        pageSize: String(pageSize),
+    });
+
+    if (search?.trim()) {
+        params.set('search', search.trim());
+    }
+
+    if (status !== undefined) {
+        params.set('status', String(status));
+    }
+
+    const response = await fetch(
+        `/api/work-tasks?${params.toString()}`,
+        { signal },
+    );
+
+    if (!response.ok) {
+        throw new Error('Görevler yüklenemedi.');
+    }
+
+    return response.json();
 }

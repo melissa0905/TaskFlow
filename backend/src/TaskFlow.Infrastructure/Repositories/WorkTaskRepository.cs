@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Application.Abstractions;
+using TaskFlow.Application.Common.Models;
 using TaskFlow.Domain.Entities;
+using TaskFlow.Domain.Enums;
 using TaskFlow.Infrastructure.Persistence;
 
 namespace TaskFlow.Infrastructure.Repositories
@@ -59,6 +61,45 @@ namespace TaskFlow.Infrastructure.Repositories
         public void Remove(WorkTask task, CancellationToken cancellationToken)
         {
             dbContext.WorkTasks.Remove(task);
+        }
+
+        public async Task<PagedResult<WorkTask>> GetPagedAsync(string? search, int? status, int page, int pageSize, CancellationToken cancellationToken)
+        {
+            IQueryable<WorkTask> query = dbContext.WorkTasks
+       .AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var searchText = search.Trim();
+
+                query = query.Where(task =>
+                    task.Title.Contains(searchText));
+            }
+
+            if (status.HasValue)
+            {
+                var selectedStatus = (WorkTaskStatus)status.Value;
+
+                query = query.Where(task =>
+                    task.Status == selectedStatus);
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .Include(task => task.Project)
+                .Include(task => task.AssignedTo)
+                .OrderBy(task => task.DueDate)
+                .ThenBy(task => task.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<WorkTask>(
+                items,
+                totalCount,
+                page,
+                pageSize);
         }
     }
 }

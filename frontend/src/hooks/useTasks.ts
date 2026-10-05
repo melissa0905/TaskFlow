@@ -2,24 +2,66 @@ import { useCallback, useEffect, useState } from "react";
 import { getWorkTasks } from "../api/workTasks";
 import type { WorkTask } from '../types/workTask'
 
-export function useTasks() {
-    const [tasks, setTasks] = useState<WorkTask[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
 
-    const reload  = useCallback(async () => {
+type UseTasksParams = {
+    search: string;
+    status: number | undefined;
+    page: number;
+    pageSize: number;
+};
+
+export function useTasks({
+    search,
+    status,
+    page,
+    pageSize,
+}: UseTasksParams) {
+    const [tasks, setTasks] = useState<WorkTask[]>([])
+    const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('');
+    ""
+    const reload = useCallback(async (signal?: AbortSignal): Promise<void> => {
         setLoading(true)
-        setError(null)
+        setError('')
         try {
-            setTasks(await getWorkTasks())
-        } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'Görevler yüklenemedi.')
+            const result = await getWorkTasks(
+                { search, status, page, pageSize },
+                signal,
+            );
+
+            if (!signal?.aborted) {
+                setTasks(result.items);
+                setTotalCount(result.totalCount);
+                setTotalPages(result.totalPages);
+            }
+        } catch (error: unknown) {
+            if (!signal?.aborted) {
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : 'Beklenmeyen bir hata oluştu.',
+                );
+            }
         } finally {
-            setLoading(false)
+            if (!signal?.aborted) {
+                setLoading(false);
+            }
         }
-    }, [])
+    }, [search, status, page, pageSize],)
+
     useEffect(() => {
-        void reload()
+        const controller = new AbortController();
+        void reload(controller.signal);
+        return () => controller.abort();
     }, [reload])
-    return { tasks, loading, error, reload }
+    return {
+        tasks,
+        totalCount,
+        totalPages,
+        loading,
+        error,
+        reload,
+    };
 }
