@@ -1,5 +1,6 @@
 import type { PagedResult } from "../types/pagedResult";
 import type { CreateWorkTaskInput, GetWorkTasksParams, WorkTask, WorkTaskDetail } from "../types/workTask";
+import { readApiError } from "./ApiError";
 
 export async function createWorkTask(input: CreateWorkTaskInput): Promise<void> {
     const response = await fetch('/api/work-tasks', {
@@ -48,9 +49,11 @@ export async function updateWorkTask(id: string, input: Partial<CreateWorkTaskIn
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
     })
-
     if (!response.ok) {
-        throw new Error('Görev bilgileri güncellenemedi.')
+        throw await readApiError(
+            response,
+            'Görev oluşturulamadı.',
+        );
     }
 }
 

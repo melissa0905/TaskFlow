@@ -504,3 +504,26 @@ li p {
     grid-template-columns: 1fr;
   }
 }
+.field-error {
+  margin-top: 6px;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.field-error p {
+  margin: 4px 0;
+}
+
+input[aria-invalid='true'],
+select[aria-invalid='true'],
+textarea[aria-invalid='true'] {
+  border-color: #dc2626;
+}
+
+.form-error {
+  padding: 12px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+}

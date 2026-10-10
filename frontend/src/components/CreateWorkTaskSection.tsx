@@ -4,7 +4,9 @@ import { getTeamMembers } from '../api/teamMembers'
 import type { TeamMember } from '../types/teamMember'
 import { createWorkTask } from '../api/workTasks'
 import type { Project } from '../types/project'
-
+import { ApiError } from '../api/ApiError';
+import type { FieldErrors } from '../api/ApiError';
+import FieldError from './FieldError';
 
 type CreateWorkTaskSectionProps = {
     onCreated: () => Promise<void>
@@ -27,6 +29,7 @@ export function CreateWorkTaskSection({
 
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
+    const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState(false)
 
@@ -61,6 +64,8 @@ export function CreateWorkTaskSection({
         setError(null)
         setSuccess(false)
         setSaving(true)
+        setError('');
+        setFieldErrors({});
 
         try {
             await createWorkTask({
@@ -77,8 +82,17 @@ export function CreateWorkTaskSection({
             setSuccess(true)
             await onCreated()
 
-        } catch (err) {
-            setError('Failed to create work task')
+        } catch (error: unknown) {
+            if (error instanceof ApiError) {
+                setFieldErrors(error.fieldErrors);
+                setError(error.message);
+            } else {
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : 'Beklenmeyen bir hata oluştu.',
+                );
+            }
         } finally {
             setSaving(false)
         }
@@ -88,7 +102,11 @@ export function CreateWorkTaskSection({
         <section>
             <h2>Yeni İş Görevi Oluştur</h2>
             {loading && <p>Projeler ve ekip üyeleri yükleniyor...</p>}
-            {error && <p role="alert">{error}</p>}
+            {error && (
+                <p className="form-error" role="alert">
+                    {error}
+                </p>
+            )}
             {success && <p>Görev başarıyla oluşturuldu.</p>}
             {!loading && (
                 <form onSubmit={handleSubmit}>
@@ -106,6 +124,10 @@ export function CreateWorkTaskSection({
                                 </option>
                             ))}
                         </select>
+                        <FieldError
+                            id="task-project-error"
+                            messages={fieldErrors.projectId}
+                        />
                     </div>
 
                     <div>
@@ -115,8 +137,18 @@ export function CreateWorkTaskSection({
                             id="task-title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
+                            aria-invalid={Boolean(fieldErrors.title?.length)}
+                            aria-describedby={
+                                fieldErrors.title?.length
+                                    ? 'task-title-error'
+                                    : undefined
+                            }
                             maxLength={150}
                             required
+                        />
+                        <FieldError
+                            id="task-title-error"
+                            messages={fieldErrors.title}
                         />
                     </div>
 
@@ -129,6 +161,10 @@ export function CreateWorkTaskSection({
                             maxLength={2000}
                             required
                         />
+                        <FieldError
+                            id="task-description-error"
+                            messages={fieldErrors.description}
+                        />
                     </div>
 
                     <div>
@@ -139,6 +175,10 @@ export function CreateWorkTaskSection({
                             value={dueDate}
                             onChange={(e) => setDueDate(e.target.value)}
                             required
+                        />
+                        <FieldError
+                            id="task-due-date-error"
+                            messages={fieldErrors.dueDate}
                         />
                     </div>
 
@@ -156,6 +196,10 @@ export function CreateWorkTaskSection({
                                 </option>
                             ))}
                         </select>
+                        <FieldError
+                            id="task-assignee-error"
+                            messages={fieldErrors.assignedToId}
+                        />
                     </div>
 
                     <button type="submit" disabled={saving}>
@@ -163,7 +207,7 @@ export function CreateWorkTaskSection({
                     </button>
                 </form>
             )}
-          
+
         </section>
     )
 }
