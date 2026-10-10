@@ -61,7 +61,6 @@ export function CreateWorkTaskSection({
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
-        setError(null)
         setSuccess(false)
         setSaving(true)
         setError('');
