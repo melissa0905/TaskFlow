@@ -11,10 +11,30 @@ services:
     volumes:
       - taskflow_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U taskflow_user -d taskflow_db"]
+      test: [ "CMD-SHELL", "pg_isready -U taskflow_user -d taskflow_db" ]
       interval: 5s
       timeout: 5s
       retries: 10
-
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: taskflow-rabbitmq
+    hostname: taskflow-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: taskflow_user
+      RABBITMQ_DEFAULT_PASS: taskflow_rabbit_dev_password
+      RABBITMQ_DEFAULT_VHOST: taskflow
+    ports:
+      - "127.0.0.1:56783:5672"
+      - "127.0.0.1:15683:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
 volumes:
   taskflow_postgres_data:
+  rabbitmq_data:
