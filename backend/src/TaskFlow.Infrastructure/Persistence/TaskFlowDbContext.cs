@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Domain.Entities;
 
@@ -55,6 +56,22 @@ namespace TaskFlow.Infrastructure.Persistence
                 entity.HasIndex(x => new { x.ProjectId, x.Status });
                 entity.HasIndex(x => x.DueDate);
             });
+            
+            modelBuilder.AddInboxStateEntity(entity =>
+            {
+               entity.ToTable("inbox_state","taskflow"); 
+            });
+            
+            modelBuilder.AddOutboxMessageEntity(entity =>
+            {
+               entity.ToTable("outbox_messages","taskflow"); 
+            });
+            
+            modelBuilder.AddOutboxStateEntity(entity =>
+            {
+               entity.ToTable("outbox_states","taskflow"); 
+            });
+                        
         }
 
 

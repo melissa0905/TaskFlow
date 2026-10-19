@@ -7,6 +7,8 @@ using TaskFlow.Application.WorkTasks.Commands.CreateWorkTask;
 using TaskFlow.Application.Common.Behaviors;
 using FluentValidation;
 using TaskFlow.Api.ExceptionHandling;
+using TaskFlow.Infrastructure.Messaging;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("TaskFlowDb") ?? throw new InvalidOperationException("Connection string 'TaskFlowDbContext' not found.");
@@ -21,6 +23,7 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
 builder.Services.AddScoped<IWorkTaskRepository, WorkTaskRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IWorkTaskEventPublisher,WorkTaskEventPublisher>();
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssemblyContaining<
@@ -35,6 +38,31 @@ builder.Services.AddValidatorsFromAssemblyContaining<
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddProblemDetails();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddEntityFrameworkOutbox<TaskFlowDbContext>(outbox =>
+    {
+        outbox.UsePostgres();
+
+        outbox.QueryDelay = TimeSpan.FromSeconds(1);
+
+        outbox.UseBusOutbox();
+    });
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(
+            "localhost",
+            56783,
+            "taskflow",
+            host =>
+            {
+                host.Username("taskflow_user");
+                host.Password("taskflow_rabbit_dev_password");
+            });
+    });
+});
+
 var app = builder.Build();
 app.UseExceptionHandler();
 // Configure the HTTP request pipeline.

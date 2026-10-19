@@ -34,7 +34,7 @@ namespace TaskFlow.Infrastructure.Repositories
             CancellationToken cancellationToken)
         {
             await dbContext.WorkTasks.AddAsync(workTask, cancellationToken);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            // await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<IReadOnlyList<WorkTask>> GetAllAsync(

@@ -3,9 +3,12 @@
   <ItemGroup>
     <ProjectReference Include="..\TaskFlow.Application\TaskFlow.Application.csproj" />
     <ProjectReference Include="..\TaskFlow.Domain\TaskFlow.Domain.csproj" />
+    <ProjectReference Include="..\TaskFlow.Contracts\TaskFlow.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit" Version="8.5.11" />
+    <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.5.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

@@ -9,7 +9,7 @@ using TaskFlow.Application.WorkTasks.Commands.CreateWorkTask;
 namespace TaskFlow.Application.WorkTasks.Commands.CreateWorkTask
 {
     public sealed class CreateWorkTaskCommandHandler(
-    IWorkTaskRepository repository) : IRequestHandler<CreateWorkTaskCommand, Guid>
+    IWorkTaskRepository repository, IWorkTaskEventPublisher eventPublisher) : IRequestHandler<CreateWorkTaskCommand, Guid>
     {
         public async Task<Guid> Handle(CreateWorkTaskCommand request, CancellationToken cancellationToken)
         {
@@ -19,7 +19,7 @@ namespace TaskFlow.Application.WorkTasks.Commands.CreateWorkTask
 
             if (request.AssignedToId is Guid memberId &&
             !await repository.MemberExistsAsync(memberId, cancellationToken))
-            throw new ArgumentException("Ekip üyesi bulunamadı.");
+                throw new ArgumentException("Ekip üyesi bulunamadı.");
 
             var workTask = new Domain.Entities.WorkTask
             {
@@ -32,6 +32,15 @@ namespace TaskFlow.Application.WorkTasks.Commands.CreateWorkTask
 
             await repository.AddAsync(workTask, cancellationToken);
 
+            if (workTask.AssignedToId is Guid assigneeId)
+            {
+                await eventPublisher.PublishAssignedAsync(
+                    workTask.Id,
+                    assigneeId,
+                    workTask.Title,
+                    cancellationToken);
+            }
+            await repository.SaveChangesAsync(cancellationToken);
             return workTask.Id;
         }
     }
