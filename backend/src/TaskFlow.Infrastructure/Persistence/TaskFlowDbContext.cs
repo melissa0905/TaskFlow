@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Domain.Entities;
+using TaskFlow.Infrastructure.Persistence.Configurations;
 
 namespace TaskFlow.Infrastructure.Persistence
 {
@@ -13,7 +14,8 @@ namespace TaskFlow.Infrastructure.Persistence
         public DbSet<Project> Projects { get; set; } = null!;
         public DbSet<TeamMember> TeamMembers { get; set; } = null!;
         public DbSet<WorkTask> WorkTasks { get; set; } = null!;
-
+        public DbSet<TaskNotification> Notifications =>
+            Set<TaskNotification>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("taskflow");
@@ -56,22 +58,23 @@ namespace TaskFlow.Infrastructure.Persistence
                 entity.HasIndex(x => new { x.ProjectId, x.Status });
                 entity.HasIndex(x => x.DueDate);
             });
-            
+
             modelBuilder.AddInboxStateEntity(entity =>
             {
-               entity.ToTable("inbox_state","taskflow"); 
+                entity.ToTable("inbox_state", "taskflow");
             });
-            
+
             modelBuilder.AddOutboxMessageEntity(entity =>
             {
-               entity.ToTable("outbox_messages","taskflow"); 
+                entity.ToTable("outbox_messages", "taskflow");
             });
-            
+
             modelBuilder.AddOutboxStateEntity(entity =>
             {
-               entity.ToTable("outbox_states","taskflow"); 
+                entity.ToTable("outbox_states", "taskflow");
             });
-                        
+            modelBuilder.ApplyConfiguration(
+      new TaskNotificationConfiguration());
         }
 
 

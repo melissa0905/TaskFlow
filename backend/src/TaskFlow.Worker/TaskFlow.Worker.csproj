@@ -14,5 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskFlow.Contracts\TaskFlow.Contracts.csproj" />
+    <ProjectReference Include="..\TaskFlow.Application\TaskFlow.Application.csproj" />
+    <ProjectReference Include="..\TaskFlow.Infrastructure\TaskFlow.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

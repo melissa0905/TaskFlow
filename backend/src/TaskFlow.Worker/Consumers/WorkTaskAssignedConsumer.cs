@@ -1,21 +1,57 @@
 using MassTransit;
+using TaskFlow.Application.Abstractions;
 using TaskFlow.Contracts.Events;
+using TaskFlow.Domain.Entities;
 
 namespace TaskFlow.Worker.Consumers;
 
-public sealed class WorkTaskAssignedConsumer(ILogger<WorkTaskAssignedConsumer> logger) : IConsumer<WorkTaskAssigned>
+public sealed class WorkTaskAssignedConsumer(
+    ITaskNotificationRepository repository,
+    ILogger<WorkTaskAssignedConsumer> logger)
+    : IConsumer<WorkTaskAssigned>
 {
-    public Task Consume(ConsumeContext<WorkTaskAssigned> context)
+    public async Task Consume(
+        ConsumeContext<WorkTaskAssigned> context)
     {
         var message = context.Message;
+
+        if (message.EventId == Guid.Empty ||
+            message.TaskId == Guid.Empty ||
+            message.AssignedId == Guid.Empty ||
+            string.IsNullOrWhiteSpace(message.Title) ||
+            message.Title.Length > 200)
+        {
+            throw new InvalidOperationException(
+                "Görev atama mesajının alanları geçersiz.");
+        }
+
+        var notification = new TaskNotification
+        {
+            EventId = message.EventId,
+            TaskId = message.TaskId,
+            ReciptientId = message.AssignedId,
+            Message = $"Sana '{message.Title}' görevi atandı.",
+            IsRead = false,
+            CreatedUtc = DateTime.UtcNow
+        };
+
+        var created = await repository.AddIfNotExistsAsync(
+            notification,
+            context.CancellationToken);
+
+        if (!created)
+        {
+            logger.LogInformation(
+                "Olay daha önce işlendi. EventId: {EventId}",
+                message.EventId);
+
+            return;
+        }
+
         logger.LogInformation(
-          "Görev atama olayı alındı. EventId: {EventId}, " +
-          "TaskId: {TaskId}, AssigneeId: {AssigneeId}, " +
-          "Title: {Title}",
-          message.EventId,
-          message.TaskId,
-          message.AssignedId,
-          message.Title);
-        return Task.CompletedTask;
+            "Bildirim oluşturuldu. EventId: {EventId}, " +
+            "RecipientId: {RecipientId}",
+            message.EventId,
+            message.AssignedId);
     }
 }

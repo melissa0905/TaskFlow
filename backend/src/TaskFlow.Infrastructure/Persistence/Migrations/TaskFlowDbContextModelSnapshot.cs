@@ -215,6 +215,42 @@ namespace TaskFlow.Infrastructure.Persistence.Migrations
                     b.ToTable("projects", "taskflow");
                 });
 
+            modelBuilder.Entity("TaskFlow.Domain.Entities.TaskNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("ReciptientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TaskId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId")
+                        .IsUnique();
+
+                    b.HasIndex("ReciptientId", "CreatedUtc");
+
+                    b.ToTable("notifications", "taskflow");
+                });
+
             modelBuilder.Entity("TaskFlow.Domain.Entities.TeamMember", b =>
                 {
                     b.Property<Guid>("Id")
