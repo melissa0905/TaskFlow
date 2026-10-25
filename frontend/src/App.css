@@ -527,3 +527,123 @@ textarea[aria-invalid='true'] {
   background: #fef2f2;
   color: #b91c1c;
 }
+.notification-toolbar {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  margin-block: 24px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.notification-recipient {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.notification-recipient select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  font: inherit;
+}
+
+.notification-unread-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 12px;
+  color: #475569;
+}
+
+.notification-unread-filter input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #4f46e5;
+}
+
+.notification-list {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.notification-card {
+  padding: 22px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.notification-card--unread {
+  border-left: 4px solid #6366f1;
+  background: #f5f7ff;
+}
+
+.notification-card__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.notification-card__heading time {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.notification-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.notification-card--read .notification-badge {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.notification-card__message {
+  margin-block: 18px;
+  color: #1e293b;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.notification-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.notification-card__actions a {
+  color: #4338ca;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.notification-empty {
+  padding: 40px 20px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  color: #64748b;
+  text-align: center;
+}
