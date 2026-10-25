@@ -24,6 +24,7 @@ builder.Services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
 builder.Services.AddScoped<IWorkTaskRepository, WorkTaskRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IWorkTaskEventPublisher,WorkTaskEventPublisher>();
+builder.Services.AddScoped<ITaskNotificationRepository,TaskNotificationRepository>();
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssemblyContaining<
