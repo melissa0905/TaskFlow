@@ -21,8 +21,8 @@ class TaskPlanGenerator:
     ) -> TaskPlanResponse:
         settings = get_settings()
         api_key =(
-            settings.open_api_key.get_secret_value().strip()
-            if settings.open_api_key
+            settings.openai_api_key.get_secret_value().strip()
+            if settings.openai_api_key
             else ""
         )
         if not api_key:
@@ -60,7 +60,7 @@ class TaskPlanGenerator:
          max_retries=0,
         )as client:
             response = await client.responses.parse(
-                model=settings.opeanai_model,
+                model=settings.openai_model,
                 input=[
                       {
                         "role": "system",
@@ -83,11 +83,11 @@ class TaskPlanGenerator:
             )
         plan = response.output_parsed
         if plan is None:
-            raise PlasnGenerationError(
+            raise PlanGenerationError(
                 "Modelden kullanılabilir bir görev planı alınamadı."
             )
         if len(plan.tasks) > request.max_tasks:
-            raise PlasnGenerationError(
+            raise PlanGenerationError(
                 "Model istenen görev sayısı sınırını aştı."
             )
         return TaskPlanResponse(
