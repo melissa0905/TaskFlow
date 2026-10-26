@@ -40,3 +40,12 @@ ai_service/**/*.py[cod]
 ai_service/.env
 ai_service/.pytest_cache/
 ai_service/.ruff_cache/
+
+ai-service/.env
+ai-service/**/.env
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.env
