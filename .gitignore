@@ -32,3 +32,11 @@ secrets.json
 *.db
 *.sqlite
 *.sqlite3
+
+# Python AI service
+ai_service/.venv/
+ai_service/**/__pycache__/
+ai_service/**/*.py[cod]
+ai_service/.env
+ai_service/.pytest_cache/
+ai_service/.ruff_cache/
