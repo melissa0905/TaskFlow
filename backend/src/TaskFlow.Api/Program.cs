@@ -9,12 +9,14 @@ using FluentValidation;
 using TaskFlow.Api.ExceptionHandling;
 using TaskFlow.Infrastructure.Messaging;
 using MassTransit;
+using TaskFlow.Api.Consumers;
+using TaskFlow.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("TaskFlowDb") ?? throw new InvalidOperationException("Connection string 'TaskFlowDbContext' not found.");
 // Add services to the container.
 builder.Services.AddDbContext<TaskFlowDbContext>(options =>
-    options.UseNpgsql(connectionString,npsql => npsql.MigrationsHistoryTable(
+    options.UseNpgsql(connectionString, npsql => npsql.MigrationsHistoryTable(
         "__ef_migrations_history", "taskflow")));
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -23,8 +25,8 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
 builder.Services.AddScoped<IWorkTaskRepository, WorkTaskRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
-builder.Services.AddScoped<IWorkTaskEventPublisher,WorkTaskEventPublisher>();
-builder.Services.AddScoped<ITaskNotificationRepository,TaskNotificationRepository>();
+builder.Services.AddScoped<IWorkTaskEventPublisher, WorkTaskEventPublisher>();
+builder.Services.AddScoped<ITaskNotificationRepository, TaskNotificationRepository>();
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssemblyContaining<
@@ -41,6 +43,12 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<NotificationCreatedConsumer>()
+     .Endpoint(endpoint =>
+    {
+      endpoint.Name = "taskflow-live-notifications";
+    });
+    
     x.AddEntityFrameworkOutbox<TaskFlowDbContext>(outbox =>
     {
         outbox.UsePostgres();
@@ -61,8 +69,12 @@ builder.Services.AddMassTransit(x =>
                 host.Username("taskflow_user");
                 host.Password("taskflow_rabbit_dev_password");
             });
+        cfg.ConfigureEndpoints(context);
     });
+
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 app.UseExceptionHandler();
@@ -92,5 +104,6 @@ app.Use(async (context, next) =>
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NotificationsHub>("/hubs/notifications");
 
 app.Run();

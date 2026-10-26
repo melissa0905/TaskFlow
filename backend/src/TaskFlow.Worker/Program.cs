@@ -22,8 +22,13 @@ builder.Services.AddScoped<
     TaskNotificationRepository>();
 
 builder.Services.AddHostedService<Worker>();
+
 builder.Services.AddMassTransit(x =>
 {
+    x.AddEntityFrameworkOutbox<TaskFlowDbContext>(outbox =>
+    {
+        outbox.UsePostgres();
+    });
     x.AddConsumer<WorkTaskAssignedConsumer>()
         .Endpoint(endpoint =>
         {
@@ -45,6 +50,7 @@ builder.Services.AddMassTransit(x =>
             "taskflow-notifications",
             endpoint =>
             {
+
                 endpoint.UseMessageRetry(retry =>
                 {
                     retry.Handle<NpgsqlException>(
@@ -55,7 +61,7 @@ builder.Services.AddMassTransit(x =>
                         TimeSpan.FromSeconds(3),
                         TimeSpan.FromSeconds(5));
                 });
-
+                endpoint.UseEntityFrameworkOutbox<TaskFlowDbContext>(context);
                 endpoint.ConfigureConsumer<
                     WorkTaskAssignedConsumer>(context);
             });

@@ -47,6 +47,11 @@ public sealed class WorkTaskAssignedConsumer(
 
             return;
         }
+        await context.Publish(
+        new NotificationCreated(
+            SourceEventId: message.EventId,
+            RecipientId: message.AssignedId),
+        context.CancellationToken);
 
         logger.LogInformation(
             "Bildirim oluşturuldu. EventId: {EventId}, " +
