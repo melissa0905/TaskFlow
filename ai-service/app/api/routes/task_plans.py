@@ -78,6 +78,17 @@ async def create_task_plan(
             )
             http_status = status.HTTP_503_SERVICE_UNAVAILABLE
 
+        elif exception.code == 503:
+            detail = (
+                "Gemini modeli şu anda yoğun. "
+                "Lütfen biraz sonra tekrar deneyin."
+            )
+            http_status = status.HTTP_503_SERVICE_UNAVAILABLE
+
+        elif exception.code == 504:
+            detail = "Gemini yanıtı beklenirken zaman aşımı oluştu."
+            http_status = status.HTTP_504_GATEWAY_TIMEOUT
+
         elif exception.code in (401, 403):
             detail = (
                 "Gemini anahtarı veya erişim izinleri "
