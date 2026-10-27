@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     openai_api_key: SecretStr | None = None
     openai_model: str = "gpt-5-mini"
-
+    dotnet_api_base_url: str = "http://127.0.0.1:5042"
 
 @lru_cache
 def get_settings() -> Settings:

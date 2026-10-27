@@ -16,7 +16,16 @@ namespace TaskFlow.Infrastructure.Repositories
         public async Task<IReadOnlyList<Project>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await dbContext.Projects
-            .AsNoTracking().OrderByDescending(p => p.CreatedAtUtc).ToListAsync(cancellationToken);  
+            .AsNoTracking().OrderByDescending(p => p.CreatedAtUtc).ToListAsync(cancellationToken);
+        }
+
+        public Task<Project?> GetByIdAsync(Guid id,CancellationToken cancellationToken)
+        {
+            return dbContext.Projects
+                .AsNoTracking()
+                .SingleOrDefaultAsync(
+                    project => project.Id == id,
+                    cancellationToken);
         }
     }
 }

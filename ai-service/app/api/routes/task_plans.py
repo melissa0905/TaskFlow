@@ -15,6 +15,11 @@ from app.services.task_plan_generator import(
     PlanGenerationError,
     TaskPlanGenerator,
 )
+from app.tools.project_tools import(
+    ProjectApiError,
+    ProjectNotFoundError
+)
+
 logger = logging.getLogger(__name__)
 router = APIRouter(
     prefix="/api/task-plans",
@@ -37,11 +42,16 @@ async def create_task_plan(
         detail="AI sağlayıcısı kimlik doğrulaması başarısız.",
     ) from None
     
-    except RateLimitError:
-       raise HTTPException(
-          status_code = status.HTTP_503_SERVICE_UNAVAILABLE,
-          detail=("AI sağlayıcısının kullanım sınırına ulaşıldı." "API hesabının kota ve bakiye durumunu kontrol et."),
-       )from None
+    except RateLimitError as exception:
+        logger.warning(
+        "OpenAI 429: code=%s, type=%s",
+        exception.code,
+        exception.type,
+    )
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="AI sağlayıcısının kota veya istek sınırına ulaşıldı.",
+        ) from None
     except APITimeoutError:
         raise HTTPException(
             status_code=status.HTTP_504_GATEWAY_TIMEOUT,
@@ -70,3 +80,15 @@ async def create_task_plan(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Geçerli bir görev planı üretilemedi.",
         ) from None
+    except ProjectNotFoundError:
+        raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Seçilen proje bulunamadı.",
+    ) from None
+
+    except ProjectApiError:
+        raise HTTPException(
+        status_code=status.HTTP_502_BAD_GATEWAY,
+        detail="Proje bilgisi .NET API'den alınamadı.",
+    ) from None
+    
