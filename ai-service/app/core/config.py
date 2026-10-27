@@ -15,8 +15,8 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    openai_api_key: SecretStr | None = None
-    openai_model: str = "gpt-5-mini"
+    gemini_api_key: SecretStr | None = None
+    gemini_model: str = "gemini-2.5-flash"
     dotnet_api_base_url: str = "http://127.0.0.1:5042"
 
 @lru_cache
