@@ -6,6 +6,7 @@ import './App.css'
 import TaskDetailPage from './pages/TaskDetailPage'
 import DashboardPage from './pages/DashboardPage'
 import NotificationsPage from './pages/NotificationsPage'
+import AiPlannerPage from './pages/AiPlannerPage';
 function App() {
   return (
     <>
@@ -15,6 +16,7 @@ function App() {
         <NavLink to="/projects">Projeler</NavLink>
         <NavLink to="/team">Ekip</NavLink>
         <NavLink to="/tasks">Görevler</NavLink>
+        <NavLink to ="/ai-planner">AI Planlayıcı</NavLink>
         <NavLink to="/notifications">
           Bildirimler
         </NavLink>
@@ -28,6 +30,7 @@ function App() {
         <Route path="/tasks/:id" element={<TaskDetailPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/ai-planner" element={<AiPlannerPage />} />
         <Route
           path="/notifications"
           element={<NotificationsPage />}

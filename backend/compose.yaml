@@ -24,7 +24,7 @@ services:
       RABBITMQ_DEFAULT_PASS: taskflow_rabbit_dev_password
       RABBITMQ_DEFAULT_VHOST: taskflow
     ports:
-      - "127.0.0.1:56783:5672"
+      - "127.0.0.1:5673:5672"
       - "127.0.0.1:15683:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
