@@ -15,6 +15,11 @@ export default defineConfig({
         changeOrigin: true,
         ws: true,
       },
+      '/ai': {
+        target: 'http://127.0.0.1:58147',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ai/, ''),
+      },
     },
   },
   build: {
