@@ -11,6 +11,8 @@ using TaskFlow.Infrastructure.Messaging;
 using MassTransit;
 using TaskFlow.Api.Consumers;
 using TaskFlow.Api.Hubs;
+using TaskFlow.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("TaskFlowDb") ?? throw new InvalidOperationException("Connection string 'TaskFlowDbContext' not found.");
@@ -46,9 +48,9 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<NotificationCreatedConsumer>()
      .Endpoint(endpoint =>
     {
-      endpoint.Name = "taskflow-live-notifications";
+        endpoint.Name = "taskflow-live-notifications";
     });
-    
+
     x.AddEntityFrameworkOutbox<TaskFlowDbContext>(outbox =>
     {
         outbox.UsePostgres();
@@ -75,6 +77,25 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddSignalR();
+
+builder.Services
+    .AddIdentityCore<ApplicationUser>(options =>
+    {
+        options.User.RequireUniqueEmail = true;
+
+        options.Password.RequiredLength = 12;
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireNonAlphanumeric = false;
+
+        options.Lockout.AllowedForNewUsers = true;
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan =
+            TimeSpan.FromMinutes(5);
+    })
+    .AddRoles<IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<TaskFlowDbContext>();
 
 var app = builder.Build();
 app.UseExceptionHandler();

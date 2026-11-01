@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TaskFlow.Domain.Entities;
+using TaskFlow.Infrastructure.Identity;
 using TaskFlow.Infrastructure.Persistence.Configurations;
 
 namespace TaskFlow.Infrastructure.Persistence
 {
-    public class TaskFlowDbContext(DbContextOptions<TaskFlowDbContext> options) : DbContext(options)
+    public class TaskFlowDbContext(
+        DbContextOptions<TaskFlowDbContext> options)
+        : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
     {
         public DbSet<Project> Projects { get; set; } = null!;
         public DbSet<TeamMember> TeamMembers { get; set; } = null!;
@@ -18,8 +23,36 @@ namespace TaskFlow.Infrastructure.Persistence
             Set<TaskNotification>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("taskflow");
+            base.OnModelCreating(modelBuilder);
 
+            modelBuilder.HasDefaultSchema("taskflow");
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.ToTable("users", "taskflow");
+
+                entity.Property(user => user.FullName)
+                    .HasMaxLength(150)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<IdentityRole<Guid>>()
+                .ToTable("roles", "taskflow");
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>()
+                .ToTable("user_roles", "taskflow");
+
+            modelBuilder.Entity<IdentityUserClaim<Guid>>()
+                .ToTable("user_claims", "taskflow");
+
+            modelBuilder.Entity<IdentityUserLogin<Guid>>()
+                .ToTable("user_logins", "taskflow");
+
+            modelBuilder.Entity<IdentityUserToken<Guid>>()
+                .ToTable("user_tokens", "taskflow");
+
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>()
+                .ToTable("role_claims", "taskflow");
+                
             modelBuilder.Entity<Project>(entity =>
              {
                  entity.ToTable("projects");
