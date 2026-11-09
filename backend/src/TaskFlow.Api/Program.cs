@@ -95,7 +95,69 @@ builder.Services
             TimeSpan.FromMinutes(5);
     })
     .AddRoles<IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<TaskFlowDbContext>();
+    .AddEntityFrameworkStores<TaskFlowDbContext>()
+    .AddSignInManager();
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme =
+            IdentityConstants.ApplicationScheme;
+
+        options.DefaultChallengeScheme =
+            IdentityConstants.ApplicationScheme;
+
+        options.DefaultSignInScheme =
+            IdentityConstants.ApplicationScheme;
+    })
+    .AddIdentityCookies();
+
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "TaskFlow.Auth";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+
+    options.Cookie.SecurePolicy =
+        builder.Environment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
+
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.SlidingExpiration = false;
+
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode =
+            StatusCodes.Status401Unauthorized;
+
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode =
+            StatusCodes.Status403Forbidden;
+
+        return Task.CompletedTask;
+    };
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+
+    options.Cookie.Name = "TaskFlow.Csrf";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+
+    options.Cookie.SecurePolicy =
+        builder.Environment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
+});
 
 var app = builder.Build();
 app.UseExceptionHandler();
@@ -122,6 +184,7 @@ app.Use(async (context, next) =>
     }
 });
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
