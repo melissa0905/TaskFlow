@@ -160,6 +160,19 @@ builder.Services.AddAntiforgery(options =>
 });
 
 var app = builder.Build();
+
+await IdentitySeeder.InitializeAsync(
+    app.Services,
+    app.Environment.IsDevelopment()
+        ? app.Configuration["BootstrapAdmin:Email"]
+        : null,
+    app.Environment.IsDevelopment()
+        ? app.Configuration["BootstrapAdmin:Password"]
+        : null,
+    app.Environment.IsDevelopment()
+        ? app.Configuration["BootstrapAdmin:FullName"]
+        : null);
+        
 app.UseExceptionHandler();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -6,6 +6,7 @@ export interface CurrentUser {
     fullName: string;
     email: string;
     roles: string[];
+    teamMemberId: string | null;
 }
 export interface LoginInput {
     email: string;

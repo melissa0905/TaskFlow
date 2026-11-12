@@ -10,7 +10,8 @@ namespace TaskFlow.Application.Auth
         Guid Id,
         string FullName,
         string Email,
-        IReadOnlyList<string> Roles
+        IReadOnlyList<string> Roles,
+         Guid? TeamMemberId
     );
 
 }

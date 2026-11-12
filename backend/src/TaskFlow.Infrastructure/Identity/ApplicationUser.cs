@@ -15,6 +15,7 @@ namespace TaskFlow.Infrastructure.Identity
         }
 
         public string FullName { get; set; } = string.Empty;
+        public Guid? TeamMemberId { get; set; }
         
         
     }

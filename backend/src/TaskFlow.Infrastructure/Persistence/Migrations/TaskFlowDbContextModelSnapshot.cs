@@ -498,6 +498,9 @@ namespace TaskFlow.Infrastructure.Persistence.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("TeamMemberId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -513,6 +516,9 @@ namespace TaskFlow.Infrastructure.Persistence.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("TeamMemberId")
+                        .IsUnique();
 
                     b.ToTable("users", "taskflow");
                 });
@@ -596,6 +602,14 @@ namespace TaskFlow.Infrastructure.Persistence.Migrations
                     b.Navigation("AssignedTo");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("TaskFlow.Infrastructure.Identity.ApplicationUser", b =>
+                {
+                    b.HasOne("TaskFlow.Domain.Entities.TeamMember", null)
+                        .WithOne()
+                        .HasForeignKey("TaskFlow.Infrastructure.Identity.ApplicationUser", "TeamMemberId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("TaskFlow.Domain.Entities.Project", b =>

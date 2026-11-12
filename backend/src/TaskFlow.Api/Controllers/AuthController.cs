@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskFlow.Api.Contracts.Auth;
 using TaskFlow.Application.Abstractions;
+using TaskFlow.Application.Common.Security;
 
 namespace TaskFlow.Api.Controllers
 {
@@ -34,8 +35,8 @@ namespace TaskFlow.Api.Controllers
             });
         }
 
-        [AllowAnonymous]
-        [HttpPost("register")]
+        [Authorize(Roles = AppRoles.Admin)]
+        [HttpPost("employees")]
         public async Task<IActionResult> Register(
             RegisterRequest request)
         {

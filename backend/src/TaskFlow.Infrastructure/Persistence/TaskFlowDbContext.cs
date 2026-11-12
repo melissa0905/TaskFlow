@@ -33,6 +33,14 @@ namespace TaskFlow.Infrastructure.Persistence
                 entity.Property(user => user.FullName)
                     .HasMaxLength(150)
                     .IsRequired();
+
+                entity.HasIndex(user => user.TeamMemberId)
+                    .IsUnique();
+                entity.HasOne<TeamMember>()
+                    .WithOne()
+                    .HasForeignKey<ApplicationUser>(
+                        user => user.TeamMemberId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Entity<IdentityRole<Guid>>()
@@ -52,7 +60,7 @@ namespace TaskFlow.Infrastructure.Persistence
 
             modelBuilder.Entity<IdentityRoleClaim<Guid>>()
                 .ToTable("role_claims", "taskflow");
-                
+
             modelBuilder.Entity<Project>(entity =>
              {
                  entity.ToTable("projects");
