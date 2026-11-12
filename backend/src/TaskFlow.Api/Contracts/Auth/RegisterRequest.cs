@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace TaskFlow.Api.Contracts.Auth
 {
-   public sealed record RegisterRequest(
-    [property: Required, StringLength(150)]
-    string FullName,
-
-    [property: Required, EmailAddress, StringLength(256)]
-    string Email,
-
-    [property: Required, StringLength(128, MinimumLength = 12)]
-    string Password);
+  public sealed record RegisterRequest(
+    [Required, StringLength(150)] string FullName,
+    [Required, EmailAddress, StringLength(256)] string Email,
+    [Required, StringLength(128, MinimumLength = 12)] string Password);
 }

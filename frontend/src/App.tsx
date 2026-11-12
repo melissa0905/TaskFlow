@@ -7,6 +7,7 @@ import TaskDetailPage from './pages/TaskDetailPage'
 import DashboardPage from './pages/DashboardPage'
 import NotificationsPage from './pages/NotificationsPage'
 import AiPlannerPage from './pages/AiPlannerPage';
+import AuthPage from './pages/AuthPage'
 function App() {
   return (
     <>
@@ -16,13 +17,16 @@ function App() {
         <NavLink to="/projects">Projeler</NavLink>
         <NavLink to="/team">Ekip</NavLink>
         <NavLink to="/tasks">Görevler</NavLink>
-        <NavLink to ="/ai-planner">AI Planlayıcı</NavLink>
+        <NavLink to="/ai-planner">AI Planlayıcı</NavLink>
         <NavLink to="/notifications">
           Bildirimler
         </NavLink>
       </nav>
 
       <Routes>
+        <Route path="/login" element={<AuthPage key="login" mode="login" />} />
+        <Route path="/register" element={<AuthPage key="register" mode="register" />} />
+
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/team" element={<TeamMembersPage />} />

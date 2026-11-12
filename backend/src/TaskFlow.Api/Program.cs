@@ -20,7 +20,7 @@ var connectionString = builder.Configuration.GetConnectionString("TaskFlowDb") ?
 builder.Services.AddDbContext<TaskFlowDbContext>(options =>
     options.UseNpgsql(connectionString, npsql => npsql.MigrationsHistoryTable(
         "__ef_migrations_history", "taskflow")));
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
